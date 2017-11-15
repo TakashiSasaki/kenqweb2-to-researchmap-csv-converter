@@ -2,6 +2,7 @@
 <html>
    <head>
       <base target="_top">
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
       <?!=HtmlService.createHtmlOutputFromFile("css").getContent()?>
    </head>
    <body>
@@ -33,7 +34,9 @@
       <div class="step">
          <h1>Step3</h1>
          <p>Paste (Ctrl+V) the range to the text area below.</p>
-         <textarea placeholder="Example
+         <textarea 
+         onChange="onChange(this)" onBlur="onChange(this)"
+         placeholder="Example
             発表区分	単独／共同	演題・和文	演題・英文	データ区分	学内全発表者	学外全発表者	発表年	発表月	実績集計年度	国内／海外	学会名	備考・概要
             1	2	構成分子の形状を利用したシクロファンの合成		【共著データ】	奥島　鉄雄【データ登録者】、森　重樹、宇野　英満	/沖　光脩・田川和成・安藤千恵・森　重樹・奥島鉄雄・宇野英満	2015	03	2014	1	日本化学会第95春季年会	船橋（日本大学理工学部船橋キャンパス）2015年3月26-29日（口頭A）
             1	2	オキソカーボン酸とピロール誘導体の反応による近赤外色素の合成		【共著データ】	奥島　鉄雄【データ登録者】、森　重樹、宇野　英満	/上代一貴・北束政波・森　重樹・奥島鉄雄・宇野英満	2015	03	2014	1	日本化（以下略）"></textarea>
@@ -42,14 +45,14 @@
          <h1>Step4</h1>
          <p>Review the following table</p>
          <div>
-            <p>items in Japanese</p>
-            <table>
-            </table>
+            <p>Japanese</p>
+            <div id="japaneseTable">
+            </div>
          </div>
          <div>
-            <p>items in English</p>
-            <table>
-            </table>
+            <p>English</p>
+            <div id="englishTable">
+            </div>
          </div>
       </div>
       <div class="step">
@@ -67,11 +70,38 @@
          <img src="https://lh3.googleusercontent.com/2ips-9dDVZLWdn5LYFnpwcLX6Vwezl9wOkFGimyeeVZUyZcNUIS9fxWZqz2s9e4o6Ff5e2b8SIfIhhGP5pPwNvs3XOnWCq7hLwWh9tccFAzdwniv6edwQL9pNobSfcPdvOB9iymhfRBAW48UfAp-mbSIImighHhcezoNwIrhRZXYK3oxy6cVSrfHSbHIp1TEE5zrkyNrui7PSEisldo32xfoVvQbRazSpkvfn1Bn9o8EutVE0m9Zg6_tqLF9eOT5vCYObRklz9gb-8tuOHJ8l96VH5tqHoVxfAVSQ-gtHzRWww1wDwYNnVrCCT4A1QJB-QAehotSShNrb5hHI6X1NYEIM0Ki3I91NUWK5GLZ9ck_zM24NzydkMU5RgWUyQacwl6erDBXS-nqyKGMpLwC2R5LA5wKy3nQqmlQ42TXFiwKA3da_tDcOP4GjpQoOYojFdZDhqw_pjPscbK9TbO46E37M9f4eD7Dgv9H8EexNwi5gBp0ZUTU1PMFH0e6sn4c9Q9uGSGW4XmwMUL8w4zUgLxEGi0Cp5hR2yfel9LDZ32sY4Zg7I-DdVBcrW9Qdp0oOOqphWmwXDKBDMvCHXLtGogzOvSZiNTxZVa7rGpw6ZwKLAAKHUmSTj7isvIX6dbK-wET7rn-wIZ1nxlr0vPzCdjDCfICLPeN20eO=w676-h419-no">
       </div>
       <script>
+      
+        google.charts.load('current', {'packages':['table']});
+        
         function copyUrl(){
           var shortUrl = document.getElementById("shortUrl");
           document.getSelection().selectAllChildren(shortUrl);
           document.execCommand("copy");
         }
+        function onChange(element){
+          google.script.run.withSuccessHandler(function(count){
+            alert(count + " items found");
+            google.script.run.withSuccessHandler(function(dataObject){
+              var dataTable = new google.visualization.DataTable(dataObject);
+              var dataView = new google.visualization.DataView(dataTable);
+              var englishTable = new google.visualization.Table(document.getElementById("englishTable"));
+              englishTable.draw(dataView);
+            }).withFailureHandler(function(e){
+              alert(e);
+            }).getDataObjectWithEnglishLabel();
+            google.script.run.withSuccessHandler(function(dataObject){
+              var dataTable = new google.visualization.DataTable(dataObject);
+              var dataView = new google.visualization.DataView(dataTable);
+              var japaneseTable = new google.visualization.Table(document.getElementById("japaneseTable"));
+              japaneseTable.draw(dataView);
+            }).withFailureHandler(function(e){
+              alert(e);
+            }).getDataObjectWithJapaneseLabel();
+          }).withFailureHandler(function(e){
+            alert(e);
+          }).cacheKenqwebRecords(element.value);
+        }
       </script>
+      <?!=CsvParser.loadCsvParser();?>
    </body>
 </html>
