@@ -58,8 +58,8 @@
       <div class="step">
          <h1>Step5</h1>
          <p>Download two CSV files</p>
-         <button>Download CSV file in Japanese</button>
-         <button>Download CSV file in English</button>
+         <button onclick="window.open('<?=ScriptApp.getService().getUrl()?>?csvJapanese=1')">Download CSV file in Japanese</button>
+         <button onclick="window.open('<?=ScriptApp.getService().getUrl()?>?csvEnglish=1')">Download CSV file in English</button>
       </div>
       <div class="step">
          <h1>Step6</h1>

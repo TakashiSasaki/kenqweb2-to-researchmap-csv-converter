@@ -24,6 +24,7 @@ function getKenqwebRecords(){
     var json = JSON.parse(jsonString);
     records.push(json);
   }
+  return records;
 }
 
 function getDataObjectWithEnglishLabel(){
@@ -71,8 +72,8 @@ function objectToResearchmapRecord(o){
   var record = [];
   record.push(o["演題・和文"]);
   record.push(o["演題・英文"]);
-  record.push(o["学内全発表者"] + "," + o["学外全発表者"]);
-  record.push(o["学内全発表者"] + "," + o["学外全発表者"]);
+  record.push((o["学内全発表者"] + "," + o["学外全発表者"]).replace(/【データ登録者】/g, ""));
+  record.push((o["学内全発表者"] + "," + o["学外全発表者"]).replace(/【データ登録者】/g, ""));
   record.push(o["学会名"]);
   record.push(o["学会名"]);
   record.push(o["発表年"] + o["発表月"] + "00");
